@@ -25,7 +25,7 @@ app.get('/js', (req, res) => {
 
 app.post('/new/:date', (req, res) => {
     const date = parseInt(req.params.date);
-    const { email, msg, nickname } = req.body;
+    const { email, msg, nickname, img } = req.body;
 
     if (!email || !msg) {
         res.send({
@@ -41,8 +41,23 @@ app.post('/new/:date', (req, res) => {
                     code: 0,
                     message: 'Already accepted contribution from the user.'
                 });
+                return;
             }
         }
+
+        newUser = {
+            email: email,
+            msg: msg,
+            nickname: nickname,
+            img: img
+        }
+        data.push(newUser);
+        fs.writeFileSync(__dirname + `/data/${date}.json`, JSON.stringify(data, null, 4));
+
+        res.send({
+            code: 2,
+            message: 'Successfully submitted contribution from the user.'
+        });
     } else {
         res.send({
             code: 0,
